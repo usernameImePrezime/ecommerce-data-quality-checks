@@ -1,19 +1,23 @@
-# Data Quality Framework: E-Commerce Transactions
+# E-Commerce Data Quality Framework
 
-This project establishes a data quality pipeline for the Online Retail dataset. We focus on ensuring financial accuracy and reliable customer analytics.
+This repository provides a robust Data Quality (DQ) suite for the Online Retail e-commerce dataset. The framework is designed to ensure that downstream analytics—specifically Financial Reporting and Customer Lifetime Value (CLV) models—are built on accurate, unique, and complete data.
 
-## Data Quality Matrix
+## 📊 Data Quality Strategy Matrix
 
-| Check | Dimension | Severity | Goal |
+| Check ID | Dimension | Severity | Verification Goal |
 | :--- | :--- | :--- | :--- |
-| Missing Customer ID | Completeness | **Critical** | Protect CLV metrics |
-| Negative Quantities | Validity | **Critical** | Prevent revenue deflation |
-| Duplicate Invoices | Uniqueness | Warning | Avoid volume inflation |
-| Non-Product Codes | Validity | Warning | Clean product catalog |
-| Future Dates | Timeliness | **Critical** | Ensure ETL health |
+| **DQ-01** | Completeness | **Critical** | Validate that all transactions are linked to a `CustomerID`. |
+| **DQ-02** | Validity | **Critical** | Identify negative quantities not explicitly flagged as cancellations ('C'). |
+| **DQ-03** | Uniqueness | Warning | Prevent double-counting of items within the same invoice/timestamp. |
+| **DQ-04** | Validity | Warning | Isolate non-product administrative codes (e.g., POST, M, BANK CHARGES). |
+| **DQ-05** | Timeliness | **Critical** | Ensure no invoices are dated in the future relative to ingestion. |
 
-## Technical Implementation
-Detailed SQL queries for each check are located in the `/sql` directory.
+## 🛠 Project Structure
+- `/sql`: Contains the implementation logic for each quality check.
+- `README.md`: Project overview and strategic alignment.
 
-## Future Scalability
-To move these checks into production at JetBrains, I would integrate them into a **dbt** (data build tool) workflow to ensure data is validated automatically before reaching any BI dashboards.
+## 🚀 Production Roadmap & Scalability
+In a production environment at **JetBrains**, I would transition these manual SQL checks into an automated pipeline:
+1. **Data Contracts:** Implement schema validation at the ingestion layer using tools like **Great Expectations** to catch "Critical" errors before they reach the warehouse.
+2. **Automated Testing:** Integrate these checks into a **dbt (data build tool)** workflow to run as part of the daily ELT process.
+3. **Monitoring:** Export DQ metrics to a **Datalore** dashboard to monitor data health trends and alert the Data Office of systemic issues.
